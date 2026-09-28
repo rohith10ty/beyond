@@ -338,8 +338,10 @@ const OptionWheel = forwardRef(function OptionWheel(
       role="listbox"
       tabIndex={0}
       aria-label="Option wheel"
-      className={`relative h-full w-full select-none overflow-hidden outline-none [touch-action:none] ${
-        isDragging ? 'cursor-grabbing' : 'cursor-grab'
+      className={`relative h-full w-full select-none overflow-hidden outline-none ${
+        draggable ? '[touch-action:none]' : '[touch-action:pan-y] pointer-events-none'
+      } ${
+        isDragging ? 'cursor-grabbing' : draggable ? 'cursor-grab' : 'cursor-default'
       }${className ? ` ${className}` : ''}`}
       style={{
         '--ow-text-color': textColor,
@@ -347,11 +349,11 @@ const OptionWheel = forwardRef(function OptionWheel(
         '--ow-font-size': `${fontSize}rem`,
         '--ow-inset': `${inset}px`
       }}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerEnd}
-      onPointerCancel={handlePointerEnd}
-      onKeyDown={handleKeyDown}
+      onPointerDown={draggable ? handlePointerDown : undefined}
+      onPointerMove={draggable ? handlePointerMove : undefined}
+      onPointerUp={draggable ? handlePointerEnd : undefined}
+      onPointerCancel={draggable ? handlePointerEnd : undefined}
+      onKeyDown={draggable ? handleKeyDown : undefined}
     >
       {items.map((label, index) => (
         <div

@@ -125,7 +125,7 @@ export default function AboutSection() {
         </div>
 
         {/* RIGHT COLUMN: PURE FLOATING OPTION WHEEL (CENTERED ON MOBILE/TABLET, RIGHT-ALIGNED ON DESKTOP) */}
-        <div className="relative flex h-[360px] sm:h-[440px] w-full items-center justify-center overflow-hidden lg:h-[520px]">
+        <div className="pointer-events-none touch-pan-y relative flex h-[360px] sm:h-[440px] w-full items-center justify-center overflow-hidden lg:h-[520px]">
           <OptionWheel
             ref={wheelRef}
             items={destinationItems}
