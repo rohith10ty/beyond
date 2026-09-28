@@ -200,27 +200,30 @@ export default function BookingModal({
           className="relative w-full max-w-4xl overflow-hidden rounded-3xl border border-white/20 bg-black/65 text-white shadow-[0_30px_100px_rgba(0,0,0,0.9)] backdrop-blur-2xl flex flex-col max-h-[88vh]"
         >
           {/* CLEAN LUXURY HEADER */}
-          <div className="flex items-center justify-between border-b border-white/10 px-5 sm:px-6 py-3 bg-white/5 shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#caa16d] text-[#091524] font-bold">
-                <Plane size={16} className="-rotate-45" />
+          <div className="flex items-center justify-between border-b border-white/10 px-3.5 sm:px-6 py-2.5 sm:py-3 bg-white/5 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-[#caa16d] text-[#091524] font-bold shrink-0">
+                <Plane size={15} className="-rotate-45" />
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[13.5px] sm:text-[15px] font-bold text-white">
-                    {origin?.city || "New Delhi"} ({origin?.code || "DEL"}) → {destination?.city || "Tokyo"} ({destination?.code || "HND"})
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 sm:gap-2 truncate">
+                  <span className="text-[13px] sm:text-[15px] font-bold text-white truncate">
+                    {origin?.city || "Delhi"} ({origin?.code || "DEL"}) → {destination?.city || "Tokyo"} ({destination?.code || "HND"})
                   </span>
-                  <span className="rounded-full bg-white/10 px-2 py-0.5 text-[9px] font-semibold text-white/70">
-                    {flight.airline} · {isInternational ? "Boeing 777-300ER (Widebody)" : "Airbus A321neo"}
+                  <span className="hidden sm:inline-block rounded-full bg-white/10 px-2 py-0.5 text-[9px] font-semibold text-white/70">
+                    {flight.airline} · {isInternational ? "Boeing 777-300ER" : "Airbus A321neo"}
                   </span>
+                </div>
+                <div className="text-[9.5px] text-white/60 truncate sm:hidden">
+                  {flight.airline} · {isInternational ? "Boeing 777-300ER (Widebody)" : "Airbus A321neo"}
                 </div>
               </div>
             </div>
 
             {/* STEP COUNTER BADGE */}
-            <div className="flex items-center gap-3">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#caa16d]">
-                Step {step} of 4: {step === 1 ? "Select Seat" : step === 2 ? "Passenger Details" : step === 3 ? "Payment" : "Boarding Pass"}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-[#caa16d]">
+                Step {step} of 4: {step === 1 ? "Select Seat" : step === 2 ? "Details" : step === 3 ? "Payment" : "Confirmed"}
               </span>
               <button
                 type="button"
@@ -237,32 +240,32 @@ export default function BookingModal({
           {/* STEP 1: SEAT SELECTOR & YOUR TRIP CARD                       */}
           {/* ============================================================ */}
           {step === 1 && (
-            <div className="p-4 sm:p-5 overflow-hidden flex-1 grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch">
+            <div className="p-3 sm:p-5 overflow-hidden flex-1 grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4 items-stretch">
               {/* LEFT COLUMN: AIRCRAFT CABIN SEAT MAP (md:col-span-7) */}
-              <div className="md:col-span-7 flex flex-col justify-between rounded-2xl border border-white/15 bg-white/[0.04] p-3 sm:p-4 backdrop-blur-md overflow-hidden">
+              <div className="md:col-span-7 flex flex-col justify-between rounded-2xl border border-white/15 bg-white/[0.04] p-2.5 sm:p-4 backdrop-blur-md overflow-hidden">
                 {/* NOSE / AIRCRAFT HEADER */}
-                <div className="mb-2 text-center text-[10.5px] font-bold uppercase tracking-[0.25em] text-[#caa16d]">
+                <div className="mb-1.5 sm:mb-2 text-center text-[10px] sm:text-[10.5px] font-bold uppercase tracking-[0.25em] text-[#caa16d]">
                   NOSE · {isInternational ? "BOEING 777-300ER (9 SEATS PER ROW)" : "AIRBUS A321NEO (6 SEATS PER ROW)"}
                 </div>
 
                 {/* COLUMN LETTERS HEADER */}
                 {isInternational ? (
                   /* 9-ACROSS COLUMN HEADERS (A B C | D E F | H J K) */
-                  <div className="mb-2 flex items-center justify-center gap-1 sm:gap-2 text-[10px] font-bold text-white/80 border-b border-white/10 pb-1 shrink-0">
+                  <div className="mb-1.5 flex items-center justify-center gap-1 sm:gap-2 text-[9.5px] sm:text-[10px] font-bold text-white/80 border-b border-white/10 pb-1 shrink-0 overflow-x-auto no-scrollbar">
                     <span className="w-5 text-center text-transparent">#</span>
-                    <div className="flex gap-1">
+                    <div className="flex gap-0.5 sm:gap-1">
                       <span className="w-5 sm:w-6 text-center">A</span>
                       <span className="w-5 sm:w-6 text-center">B</span>
                       <span className="w-5 sm:w-6 text-center">C</span>
                     </div>
-                    <div className="w-2 sm:w-2.5 text-center text-[7px] text-white/30">|</div>
-                    <div className="flex gap-1">
+                    <div className="w-1.5 sm:w-2.5 text-center text-[7px] text-white/30">|</div>
+                    <div className="flex gap-0.5 sm:gap-1">
                       <span className="w-5 sm:w-6 text-center">D</span>
                       <span className="w-5 sm:w-6 text-center">E</span>
                       <span className="w-5 sm:w-6 text-center">F</span>
                     </div>
-                    <div className="w-2 sm:w-2.5 text-center text-[7px] text-white/30">|</div>
-                    <div className="flex gap-1">
+                    <div className="w-1.5 sm:w-2.5 text-center text-[7px] text-white/30">|</div>
+                    <div className="flex gap-0.5 sm:gap-1">
                       <span className="w-5 sm:w-6 text-center">H</span>
                       <span className="w-5 sm:w-6 text-center">J</span>
                       <span className="w-5 sm:w-6 text-center">K</span>
@@ -270,23 +273,23 @@ export default function BookingModal({
                   </div>
                 ) : (
                   /* 6-ACROSS COLUMN HEADERS (A B C | D E F) */
-                  <div className="mb-2 flex items-center justify-center gap-2 sm:gap-3 text-[11px] font-bold text-white/80 border-b border-white/10 pb-1.5 shrink-0">
+                  <div className="mb-1.5 flex items-center justify-center gap-2 sm:gap-3 text-[10px] sm:text-[11px] font-bold text-white/80 border-b border-white/10 pb-1.5 shrink-0 overflow-x-auto no-scrollbar">
                     <span className="w-5 text-center text-transparent">#</span>
-                    <div className="flex gap-1.5 sm:gap-2">
-                      <span className="w-7 sm:w-8 text-center">A</span>
-                      <span className="w-7 sm:w-8 text-center">B</span>
-                      <span className="w-7 sm:w-8 text-center">C</span>
+                    <div className="flex gap-1 sm:gap-2">
+                      <span className="w-6 sm:w-8 text-center">A</span>
+                      <span className="w-6 sm:w-8 text-center">B</span>
+                      <span className="w-6 sm:w-8 text-center">C</span>
                     </div>
-                    <div className="w-3 sm:w-4 text-center text-[8px] text-white/30">AISLE</div>
-                    <div className="flex gap-1.5 sm:gap-2">
-                      <span className="w-7 sm:w-8 text-center">D</span>
-                      <span className="w-7 sm:w-8 text-center">E</span>
-                      <span className="w-7 sm:w-8 text-center">F</span>
+                    <div className="w-2.5 sm:w-4 text-center text-[7.5px] sm:text-[8px] text-white/30">AISLE</div>
+                    <div className="flex gap-1 sm:gap-2">
+                      <span className="w-6 sm:w-8 text-center">D</span>
+                      <span className="w-6 sm:w-8 text-center">E</span>
+                      <span className="w-6 sm:w-8 text-center">F</span>
                     </div>
                   </div>
                 )}
 
-                {/* SCROLLABLE CABIN ROWS (ZERO SCROLLBAR, SMOOTH WHEEL SCROLL) */}
+                {/* SCROLLABLE CABIN ROWS (ZERO SCROLLBAR, SMOOTH WHEEL & TOUCH SCROLL) */}
                 <div
                   ref={seatContainerRef}
                   data-lenis-prevent="true"
@@ -297,17 +300,17 @@ export default function BookingModal({
                       seatContainerRef.current.scrollTop += e.deltaY;
                     }
                   }}
-                  className="no-scrollbar space-y-1.5 overflow-y-auto max-h-[305px] overscroll-contain touch-pan-y pr-0.5"
+                  className="no-scrollbar space-y-1.5 overflow-y-auto overflow-x-auto max-h-[38vh] sm:max-h-[305px] overscroll-contain touch-pan-y pr-0.5"
                 >
                   {activeRows.map((item, idx) => {
                     if (item.isExitRow) {
                       return (
                         <div
                           key={`exit-${idx}`}
-                          className="my-1.5 flex items-center justify-between px-2 text-[8.5px] font-bold uppercase tracking-widest text-emerald-400/80 bg-emerald-500/10 py-1 rounded-lg border border-emerald-500/20"
+                          className="my-1.5 flex items-center justify-between px-2 text-[8px] sm:text-[8.5px] font-bold uppercase tracking-widest text-emerald-400/80 bg-emerald-500/10 py-1 rounded-lg border border-emerald-500/20"
                         >
                           <span>🚪 EXIT L1</span>
-                          <span className="text-[7.5px] text-emerald-300/60">{item.label}</span>
+                          <span className="text-[7px] sm:text-[7.5px] text-emerald-300/60">{item.label}</span>
                           <span>EXIT R1 🚪</span>
                         </div>
                       );
@@ -337,7 +340,7 @@ export default function BookingModal({
                                     disabled={isOcc}
                                     type="button"
                                     onClick={() => setSelectedSeat(code)}
-                                    className={`h-7 w-12 sm:w-14 rounded-lg text-[10px] font-bold transition-all ${
+                                    className={`h-6 sm:h-7 w-10 sm:w-14 rounded-lg text-[9.5px] sm:text-[10px] font-bold transition-all ${
                                       isCh
                                         ? "bg-sky-500 text-white shadow-[0_0_12px_rgba(14,165,233,0.9)] scale-105 border border-white"
                                         : isOcc
@@ -350,7 +353,7 @@ export default function BookingModal({
                                 );
                               })}
                             </div>
-                            <div className="w-2 sm:w-2.5 text-center text-[7px] text-white/20">|</div>
+                            <div className="w-1.5 sm:w-2.5 text-center text-[7px] text-white/20">|</div>
                             <div className="flex gap-1">
                               {["D", "G"].map((col) => {
                                 const code = `${row.row}${col}`;
@@ -362,7 +365,7 @@ export default function BookingModal({
                                     disabled={isOcc}
                                     type="button"
                                     onClick={() => setSelectedSeat(code)}
-                                    className={`h-7 w-10 sm:w-12 rounded-lg text-[10px] font-bold transition-all ${
+                                    className={`h-6 sm:h-7 w-9 sm:w-12 rounded-lg text-[9.5px] sm:text-[10px] font-bold transition-all ${
                                       isCh
                                         ? "bg-sky-500 text-white shadow-[0_0_12px_rgba(14,165,233,0.9)] scale-105 border border-white"
                                         : isOcc
@@ -375,7 +378,7 @@ export default function BookingModal({
                                 );
                               })}
                             </div>
-                            <div className="w-2 sm:w-2.5 text-center text-[7px] text-white/20">|</div>
+                            <div className="w-1.5 sm:w-2.5 text-center text-[7px] text-white/20">|</div>
                             <div className="flex gap-1">
                               {["K"].map((col) => {
                                 const code = `${row.row}${col}`;
@@ -387,7 +390,7 @@ export default function BookingModal({
                                     disabled={isOcc}
                                     type="button"
                                     onClick={() => setSelectedSeat(code)}
-                                    className={`h-7 w-12 sm:w-14 rounded-lg text-[10px] font-bold transition-all ${
+                                    className={`h-6 sm:h-7 w-10 sm:w-14 rounded-lg text-[9.5px] sm:text-[10px] font-bold transition-all ${
                                       isCh
                                         ? "bg-sky-500 text-white shadow-[0_0_12px_rgba(14,165,233,0.9)] scale-105 border border-white"
                                         : isOcc
@@ -411,7 +414,7 @@ export default function BookingModal({
                             <span className="w-5 text-center text-[10px] font-mono font-bold text-sky-400/70">
                               {row.row}
                             </span>
-                            <div className="flex gap-1">
+                            <div className="flex gap-0.5 sm:gap-1">
                               {["A", "C"].map((col) => {
                                 const code = `${row.row}${col}`;
                                 const isOcc = row.occupied.includes(code);
@@ -422,7 +425,7 @@ export default function BookingModal({
                                     disabled={isOcc}
                                     type="button"
                                     onClick={() => setSelectedSeat(code)}
-                                    className={`h-6 w-7 sm:w-8 rounded-md text-[9.5px] font-bold transition-all ${
+                                    className={`h-6 w-6 sm:h-6 sm:w-8 rounded-md text-[9px] sm:text-[9.5px] font-bold transition-all ${
                                       isCh
                                         ? "bg-sky-500 text-white shadow-[0_0_10px_rgba(14,165,233,0.9)] scale-105 border border-white"
                                         : isOcc
@@ -435,8 +438,8 @@ export default function BookingModal({
                                 );
                               })}
                             </div>
-                            <div className="w-2 sm:w-2.5 text-center text-[7px] text-white/20">|</div>
-                            <div className="flex gap-1">
+                            <div className="w-1.5 sm:w-2.5 text-center text-[7px] text-white/20">|</div>
+                            <div className="flex gap-0.5 sm:gap-1">
                               {["D", "F", "G"].map((col) => {
                                 const code = `${row.row}${col}`;
                                 const isOcc = row.occupied.includes(code);
@@ -447,7 +450,7 @@ export default function BookingModal({
                                     disabled={isOcc}
                                     type="button"
                                     onClick={() => setSelectedSeat(code)}
-                                    className={`h-6 w-5 sm:w-6 rounded-md text-[9.5px] font-bold transition-all ${
+                                    className={`h-6 w-5 sm:h-6 sm:w-6 rounded-md text-[9px] sm:text-[9.5px] font-bold transition-all ${
                                       isCh
                                         ? "bg-sky-500 text-white shadow-[0_0_10px_rgba(14,165,233,0.9)] scale-105 border border-white"
                                         : isOcc
@@ -460,8 +463,8 @@ export default function BookingModal({
                                 );
                               })}
                             </div>
-                            <div className="w-2 sm:w-2.5 text-center text-[7px] text-white/20">|</div>
-                            <div className="flex gap-1">
+                            <div className="w-1.5 sm:w-2.5 text-center text-[7px] text-white/20">|</div>
+                            <div className="flex gap-0.5 sm:gap-1">
                               {["H", "K"].map((col) => {
                                 const code = `${row.row}${col}`;
                                 const isOcc = row.occupied.includes(code);
@@ -472,7 +475,7 @@ export default function BookingModal({
                                     disabled={isOcc}
                                     type="button"
                                     onClick={() => setSelectedSeat(code)}
-                                    className={`h-6 w-7 sm:w-8 rounded-md text-[9.5px] font-bold transition-all ${
+                                    className={`h-6 w-6 sm:h-6 sm:w-8 rounded-md text-[9px] sm:text-[9.5px] font-bold transition-all ${
                                       isCh
                                         ? "bg-sky-500 text-white shadow-[0_0_10px_rgba(14,165,233,0.9)] scale-105 border border-white"
                                         : isOcc
@@ -489,13 +492,13 @@ export default function BookingModal({
                         );
                       }
 
-                      // Economy Class: 3-3-3 [A B C] | [D E F] | [H J K] (9 SEATS ACROSS)
+                      // Economy Class: 3-3-3 [A B C] | [D E F] | [H J K]
                       return (
-                        <div key={row.row} className="flex items-center justify-center gap-1 sm:gap-2">
-                          <span className="w-5 text-center text-[10px] font-mono font-bold text-white/45">
+                        <div key={row.row} className="flex items-center justify-center gap-0.5 sm:gap-1.5">
+                          <span className="w-5 text-center text-[9.5px] font-mono font-bold text-white/50">
                             {row.row}
                           </span>
-                          <div className="flex gap-1">
+                          <div className="flex gap-0.5 sm:gap-1">
                             {["A", "B", "C"].map((col) => {
                               const code = `${row.row}${col}`;
                               const isOcc = row.occupied.includes(code);
@@ -506,7 +509,7 @@ export default function BookingModal({
                                   disabled={isOcc}
                                   type="button"
                                   onClick={() => setSelectedSeat(code)}
-                                  className={`h-6 w-5 sm:w-6 rounded-md text-[9px] font-bold transition-all ${
+                                  className={`h-6 w-5 sm:h-6 sm:w-6 rounded-md text-[8.5px] sm:text-[9px] font-bold transition-all ${
                                     isCh
                                       ? "bg-sky-500 text-white shadow-[0_0_10px_rgba(14,165,233,0.9)] scale-105 border border-white"
                                       : isOcc
@@ -519,8 +522,8 @@ export default function BookingModal({
                               );
                             })}
                           </div>
-                          <div className="w-2 sm:w-2.5 text-center text-[7px] text-white/20">|</div>
-                          <div className="flex gap-1">
+                          <div className="w-1.5 sm:w-2.5 text-center text-[7px] text-white/20">|</div>
+                          <div className="flex gap-0.5 sm:gap-1">
                             {["D", "E", "F"].map((col) => {
                               const code = `${row.row}${col}`;
                               const isOcc = row.occupied.includes(code);
@@ -531,7 +534,7 @@ export default function BookingModal({
                                   disabled={isOcc}
                                   type="button"
                                   onClick={() => setSelectedSeat(code)}
-                                  className={`h-6 w-5 sm:w-6 rounded-md text-[9px] font-bold transition-all ${
+                                  className={`h-6 w-5 sm:h-6 sm:w-6 rounded-md text-[8.5px] sm:text-[9px] font-bold transition-all ${
                                     isCh
                                       ? "bg-sky-500 text-white shadow-[0_0_10px_rgba(14,165,233,0.9)] scale-105 border border-white"
                                       : isOcc
@@ -544,8 +547,8 @@ export default function BookingModal({
                               );
                             })}
                           </div>
-                          <div className="w-2 sm:w-2.5 text-center text-[7px] text-white/20">|</div>
-                          <div className="flex gap-1">
+                          <div className="w-1.5 sm:w-2.5 text-center text-[7px] text-white/20">|</div>
+                          <div className="flex gap-0.5 sm:gap-1">
                             {["H", "J", "K"].map((col) => {
                               const code = `${row.row}${col}`;
                               const isOcc = row.occupied.includes(code);
@@ -556,7 +559,7 @@ export default function BookingModal({
                                   disabled={isOcc}
                                   type="button"
                                   onClick={() => setSelectedSeat(code)}
-                                  className={`h-6 w-5 sm:w-6 rounded-md text-[9px] font-bold transition-all ${
+                                  className={`h-6 w-5 sm:h-6 sm:w-6 rounded-md text-[8.5px] sm:text-[9px] font-bold transition-all ${
                                     isCh
                                       ? "bg-sky-500 text-white shadow-[0_0_10px_rgba(14,165,233,0.9)] scale-105 border border-white"
                                       : isOcc
@@ -577,11 +580,11 @@ export default function BookingModal({
                     // 6-ACROSS DOMESTIC (A321neo / 737) RENDERER
                     // ==========================================
                     return (
-                      <div key={row.row} className="flex items-center justify-center gap-2 sm:gap-3">
-                        <span className="w-5 text-center text-[10.5px] font-mono font-bold text-white/50">
+                      <div key={row.row} className="flex items-center justify-center gap-1.5 sm:gap-3">
+                        <span className="w-5 text-center text-[10px] font-mono font-bold text-white/50">
                           {row.row}
                         </span>
-                        <div className="flex gap-1.5 sm:gap-2">
+                        <div className="flex gap-1 sm:gap-2">
                           {["A", "B", "C"].map((col) => {
                             const code = `${row.row}${col}`;
                             const isOcc = row.occupied.includes(code);
@@ -592,7 +595,7 @@ export default function BookingModal({
                                 disabled={isOcc}
                                 type="button"
                                 onClick={() => setSelectedSeat(code)}
-                                className={`h-7 w-7 sm:h-7 sm:w-8 rounded-lg text-[10.5px] font-bold transition-all ${
+                                className={`h-6.5 w-6.5 sm:h-7 sm:w-8 rounded-lg text-[10px] sm:text-[10.5px] font-bold transition-all ${
                                   isCh
                                     ? "bg-sky-500 text-white shadow-[0_0_12px_rgba(14,165,233,0.9)] scale-105 border border-white"
                                     : isOcc
@@ -609,8 +612,8 @@ export default function BookingModal({
                             );
                           })}
                         </div>
-                        <div className="w-3 sm:w-4 text-center text-[7.5px] font-bold text-white/20">|</div>
-                        <div className="flex gap-1.5 sm:gap-2">
+                        <div className="w-2 sm:w-4 text-center text-[7px] sm:text-[7.5px] font-bold text-white/20">|</div>
+                        <div className="flex gap-1 sm:gap-2">
                           {["D", "E", "F"].map((col) => {
                             const code = `${row.row}${col}`;
                             const isOcc = row.occupied.includes(code);
@@ -621,7 +624,7 @@ export default function BookingModal({
                                 disabled={isOcc}
                                 type="button"
                                 onClick={() => setSelectedSeat(code)}
-                                className={`h-7 w-7 sm:h-7 sm:w-8 rounded-lg text-[10.5px] font-bold transition-all ${
+                                className={`h-6.5 w-6.5 sm:h-7 sm:w-8 rounded-lg text-[10px] sm:text-[10.5px] font-bold transition-all ${
                                   isCh
                                     ? "bg-sky-500 text-white shadow-[0_0_12px_rgba(14,165,233,0.9)] scale-105 border border-white"
                                     : isOcc
@@ -643,9 +646,9 @@ export default function BookingModal({
                   })}
                 </div>
 
-                {/* BOTTOM LEGEND & SCROLL HINT */}
-                <div className="mt-2 flex items-center justify-between border-t border-white/10 pt-1.5 text-[9.5px] text-white/70 shrink-0">
-                  <div className="flex items-center gap-2.5">
+                {/* BOTTOM LEGEND & SCROLL BUTTONS */}
+                <div className="mt-1.5 sm:mt-2 flex items-center justify-between border-t border-white/10 pt-1.5 text-[9px] sm:text-[9.5px] text-white/70 shrink-0">
+                  <div className="flex items-center gap-2 sm:gap-2.5">
                     <span className="flex items-center gap-1">
                       <span className="h-2 w-2 rounded-sm bg-amber-500/40 border border-amber-400/50" /> First
                     </span>
@@ -679,10 +682,33 @@ export default function BookingModal({
                     </button>
                   </div>
                 </div>
+
+                {/* MOBILE BOTTOM ACTION BAR (md:hidden) */}
+                <div className="md:hidden mt-2 pt-2 border-t border-white/10 flex items-center justify-between gap-2 bg-black/40 p-2.5 rounded-2xl">
+                  <div className="flex flex-col">
+                    <span className="text-[9px] uppercase tracking-wider text-white/50">Seat</span>
+                    <span className="text-[12px] font-bold text-sky-400">
+                      {selectedSeat ? `Seat ${selectedSeat}` : "Pick seat"}
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <span className="text-[9px] uppercase tracking-wider text-white/50">Total</span>
+                    <span className="text-[13px] font-bold text-white">${flight.price.toLocaleString()}</span>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={!selectedSeat}
+                    onClick={() => setStep(2)}
+                    className="flex items-center gap-1 rounded-xl bg-sky-500 px-3.5 py-1.5 text-[11.5px] font-bold text-white shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95"
+                  >
+                    <span>Next</span>
+                    <ArrowRight size={12} />
+                  </button>
+                </div>
               </div>
 
-              {/* RIGHT COLUMN: YOUR TRIP SUMMARY CARD (md:col-span-5) */}
-              <div className="md:col-span-5 flex flex-col justify-between rounded-2xl border border-white/15 bg-white/[0.06] p-4 sm:p-5 backdrop-blur-xl shadow-lg">
+              {/* RIGHT COLUMN: YOUR TRIP SUMMARY CARD (hidden on mobile, visible on md:col-span-5) */}
+              <div className="hidden md:flex md:col-span-5 flex-col justify-between rounded-2xl border border-white/15 bg-white/[0.06] p-4 sm:p-5 backdrop-blur-xl shadow-lg">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-[10.5px] font-bold uppercase tracking-[0.24em] text-sky-400">

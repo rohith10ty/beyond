@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plane,
@@ -443,6 +444,230 @@ const featuredDestinations = [
   },
 ];
 
+function AirportPickerModal({
+  isOpen,
+  onClose,
+  title,
+  icon: Icon = Plane,
+  searchQuery,
+  setSearchQuery,
+  airports,
+  selectedAirport,
+  onSelect,
+}) {
+  if (!isOpen) return null;
+
+  const content = (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 p-3 sm:p-4 backdrop-blur-xl">
+      <div className="fixed inset-0" onClick={onClose} />
+      <div
+        className="relative z-10 w-full max-w-[440px] rounded-3xl border border-white/20 bg-[#091524] p-4 sm:p-5 shadow-[0_30px_90px_rgba(0,0,0,0.95)] flex flex-col max-h-[82vh] text-white"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-3 shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-sky-500/20 text-sky-400">
+              <Icon size={16} className={Icon === Plane ? "-rotate-45" : ""} />
+            </div>
+            <div>
+              <h3 className="text-[15px] font-bold text-white leading-none">{title}</h3>
+              <p className="text-[11px] text-white/50 mt-1">Select from 500+ global routes</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="flex h-7 w-7 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white/70 hover:bg-white/20 hover:text-white transition-colors"
+          >
+            <X size={15} />
+          </button>
+        </div>
+
+        <div className="relative mb-3 shrink-0">
+          <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
+          <input
+            type="text"
+            placeholder="Search airport or city (e.g. DEL, Mumbai, Dubai, HND, LHR)..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-2xl border border-white/15 bg-white/5 pl-9 pr-3.5 py-2.5 text-[13px] text-white placeholder-white/40 outline-none focus:border-white/50"
+            autoFocus
+          />
+        </div>
+
+        <div
+          data-lenis-prevent="true"
+          className="no-scrollbar flex-1 overflow-y-auto space-y-1.5 pr-1 overscroll-contain touch-pan-y"
+        >
+          {airports.length === 0 ? (
+            <div className="py-8 text-center text-[13px] text-white/40">
+              No airports found matching "{searchQuery}"
+            </div>
+          ) : (
+            airports.map((airport) => (
+              <button
+                type="button"
+                key={airport.code}
+                onClick={() => {
+                  onSelect(airport);
+                }}
+                className={`flex w-full items-center justify-between rounded-2xl px-3.5 py-2.5 text-left transition-colors ${
+                  selectedAirport?.code === airport.code
+                    ? "bg-white/20 text-white font-semibold border border-white/30"
+                    : "hover:bg-white/10 text-slate-200 border border-transparent"
+                }`}
+              >
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[14px] font-bold text-white">{airport.city}</span>
+                    <span className="rounded-md bg-white/10 px-1.5 py-0.5 text-[10.5px] font-mono font-bold text-sky-400">
+                      {airport.code}
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-white/60 truncate max-w-[280px]">
+                    {airport.name} · {airport.country}
+                  </div>
+                </div>
+                {selectedAirport?.code === airport.code && <Check size={16} className="text-sky-400 shrink-0" />}
+              </button>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  return typeof document !== "undefined" ? createPortal(content, document.body) : null;
+}
+
+function PassengerPickerModal({
+  isOpen,
+  onClose,
+  passengers,
+  setPassengers,
+  cabinClass,
+}) {
+  if (!isOpen) return null;
+
+  const content = (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 p-3 sm:p-4 backdrop-blur-xl">
+      <div className="fixed inset-0" onClick={onClose} />
+      <div
+        className="relative z-10 w-full max-w-[340px] rounded-3xl border border-white/20 bg-[#091524] p-4 sm:p-5 shadow-[0_30px_90px_rgba(0,0,0,0.95)] flex flex-col text-white"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-3 shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-sky-500/20 text-sky-400">
+              <Users size={16} />
+            </div>
+            <div>
+              <h3 className="text-[15px] font-bold text-white leading-none">Travelers</h3>
+              <p className="text-[11px] text-white/50 mt-1">{cabinClass}</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="flex h-7 w-7 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white/70 hover:bg-white/20 hover:text-white transition-colors"
+          >
+            <X size={15} />
+          </button>
+        </div>
+
+        <div className="space-y-3.5">
+          {/* ADULTS */}
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-[13px] font-semibold text-white">Adults</div>
+              <div className="text-[10.5px] text-white/60">Age 12+</div>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => setPassengers((p) => ({ ...p, adults: Math.max(1, p.adults - 1) }))}
+                className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/15 bg-white/10 text-white hover:border-white transition-all active:scale-95"
+              >
+                -
+              </button>
+              <span className="w-5 text-center text-[14px] font-bold text-white">{passengers.adults}</span>
+              <button
+                type="button"
+                onClick={() => setPassengers((p) => ({ ...p, adults: p.adults + 1 }))}
+                className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/15 bg-white/10 text-white hover:border-white transition-all active:scale-95"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          {/* CHILDREN */}
+          <div className="flex items-center justify-between border-t border-white/10 pt-3">
+            <div>
+              <div className="text-[13px] font-semibold text-white">Children</div>
+              <div className="text-[10.5px] text-white/60">Age 2-11</div>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => setPassengers((p) => ({ ...p, children: Math.max(0, p.children - 1) }))}
+                className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/15 bg-white/10 text-white hover:border-white transition-all active:scale-95"
+              >
+                -
+              </button>
+              <span className="w-5 text-center text-[14px] font-bold text-white">{passengers.children}</span>
+              <button
+                type="button"
+                onClick={() => setPassengers((p) => ({ ...p, children: p.children + 1 }))}
+                className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/15 bg-white/10 text-white hover:border-white transition-all active:scale-95"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          {/* INFANTS */}
+          <div className="flex items-center justify-between border-t border-white/10 pt-3">
+            <div>
+              <div className="text-[13px] font-semibold text-white">Infants</div>
+              <div className="text-[10.5px] text-white/60">Under 2</div>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => setPassengers((p) => ({ ...p, infants: Math.max(0, p.infants - 1) }))}
+                className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/15 bg-white/10 text-white hover:border-white transition-all active:scale-95"
+              >
+                -
+              </button>
+              <span className="w-5 text-center text-[14px] font-bold text-white">{passengers.infants}</span>
+              <button
+                type="button"
+                onClick={() => setPassengers((p) => ({ ...p, infants: p.infants + 1 }))}
+                className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/15 bg-white/10 text-white hover:border-white transition-all active:scale-95"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="mt-3 w-full rounded-2xl bg-white py-2.5 text-center text-[13px] font-bold text-[#091524] shadow-md transition-opacity hover:opacity-90"
+          >
+            Confirm Travelers
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  return typeof document !== "undefined" ? createPortal(content, document.body) : null;
+}
+
 export default function FlightSearch() {
   const [tripType, setTripType] = useState("round-trip");
   const [cabinClass, setCabinClass] = useState("First Suite");
@@ -607,9 +832,9 @@ export default function FlightSearch() {
           className="relative z-30 rounded-3xl border border-white/20 bg-[#091524]/90 p-6 shadow-[0_25px_80px_rgba(0,0,0,0.75)] backdrop-blur-2xl md:p-8"
         >
           {/* TOP CONTROLS: TRIP TYPE & CABIN CLASS */}
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-white/10 pb-4 sm:pb-6">
             {/* TRIP TYPE TABS */}
-            <div className="flex items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1">
+            <div className="grid grid-cols-3 sm:flex items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 w-full sm:w-auto">
               {[
                 { id: "round-trip", label: "Round Trip" },
                 { id: "one-way", label: "One Way" },
@@ -617,8 +842,9 @@ export default function FlightSearch() {
               ].map((tab) => (
                 <button
                   key={tab.id}
+                  type="button"
                   onClick={() => setTripType(tab.id)}
-                  className={`relative rounded-full px-4 py-2 text-[12px] font-semibold transition-all duration-300 ${
+                  className={`relative rounded-full px-2.5 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-[12px] font-semibold transition-all duration-300 text-center whitespace-nowrap ${
                     tripType === tab.id
                       ? "text-[#091524] shadow-md"
                       : "text-white/70 hover:text-white"
@@ -637,17 +863,18 @@ export default function FlightSearch() {
             </div>
 
             {/* CABIN CLASS SELECTOR */}
-            <div className="flex items-center gap-2">
-              <span className="text-[11.5px] font-medium uppercase tracking-wider text-white/60">Cabin:</span>
-              <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar w-full sm:w-auto pb-1 sm:pb-0">
+              <span className="text-[10.5px] sm:text-[11.5px] font-medium uppercase tracking-wider text-white/60 shrink-0">Cabin:</span>
+              <div className="flex items-center gap-1 shrink-0">
                 {["First Suite", "Business Club", "Premium Economy", "Economy"].map((c) => (
                   <button
                     key={c}
+                    type="button"
                     onClick={() => {
                       setCabinClass(c);
                       setActiveClassFilter(c);
                     }}
-                    className={`rounded-full px-3.5 py-1.5 text-[11px] font-medium transition-all ${
+                    className={`whitespace-nowrap rounded-full px-2.5 sm:px-3.5 py-1 sm:py-1.5 text-[10px] sm:text-[11px] font-medium transition-all ${
                       cabinClass === c
                         ? "border border-white/40 bg-white/20 text-white shadow-sm"
                         : "border border-transparent bg-white/[0.04] text-white/60 hover:bg-white/[0.08] hover:text-white"
@@ -669,7 +896,7 @@ export default function FlightSearch() {
               </label>
               <div
                 onClick={() => {
-                  setShowOriginPicker(!showOriginPicker);
+                  setShowOriginPicker(true);
                   setShowDestPicker(false);
                   setShowDatePicker(false);
                   setShowPassengerPicker(false);
@@ -699,59 +926,10 @@ export default function FlightSearch() {
                 </div>
                 <ChevronDown size={14} className="text-white/60 transition-transform group-hover:translate-y-0.5" />
               </div>
-
-              {/* ORIGIN DROPDOWN */}
-              <AnimatePresence>
-                {showOriginPicker && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.98 }}
-                    onWheel={(e) => e.stopPropagation()}
-                    className="absolute left-0 top-[105%] z-[100] w-full min-w-[300px] rounded-2xl border border-white/20 bg-[#091524] p-3 shadow-2xl backdrop-blur-2xl"
-                  >
-                    <input
-                      type="text"
-                      placeholder="Search Indian or World airports (e.g. Hyderabad, DEL, LHR)..."
-                      value={originSearch}
-                      onChange={(e) => setOriginSearch(e.target.value)}
-                      className="mb-2 w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-[12px] text-white outline-none focus:border-white/50"
-                      autoFocus
-                    />
-                    <div
-                      onWheel={(e) => e.stopPropagation()}
-                      className="max-h-60 overflow-y-auto space-y-1 pr-1 overscroll-contain"
-                    >
-                      {filteredOriginAirports.map((airport) => (
-                        <button
-                          type="button"
-                          key={airport.code}
-                          onClick={() => {
-                            setOrigin(airport);
-                            setShowOriginPicker(false);
-                            setOriginSearch("");
-                          }}
-                          className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left transition-colors ${
-                            origin?.code === airport.code ? "bg-white/20 text-white font-semibold" : "hover:bg-white/10 text-slate-200"
-                          }`}
-                        >
-                          <div>
-                            <div className="text-[12.5px] font-semibold text-white">
-                              {airport.city} ({airport.code})
-                            </div>
-                            <div className="text-[10px] text-white/60">{airport.name} · {airport.country}</div>
-                          </div>
-                          {origin?.code === airport.code && <Check size={14} className="text-white" />}
-                        </button>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
 
             {/* SWAP BUTTON */}
-            <div className="flex items-center justify-center pt-5">
+            <div className="flex items-center justify-center pt-2 sm:pt-5">
               <motion.button
                 type="button"
                 whileHover={{ rotate: 180, scale: 1.1 }}
@@ -772,7 +950,7 @@ export default function FlightSearch() {
               </label>
               <div
                 onClick={() => {
-                  setShowDestPicker(!showDestPicker);
+                  setShowDestPicker(true);
                   setShowOriginPicker(false);
                   setShowDatePicker(false);
                   setShowPassengerPicker(false);
@@ -802,65 +980,16 @@ export default function FlightSearch() {
                 </div>
                 <ChevronDown size={14} className="text-white/60 transition-transform group-hover:translate-y-0.5" />
               </div>
-
-              {/* DESTINATION DROPDOWN */}
-              <AnimatePresence>
-                {showDestPicker && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.98 }}
-                    onWheel={(e) => e.stopPropagation()}
-                    className="absolute left-0 top-[105%] z-[100] w-full min-w-[300px] rounded-2xl border border-white/20 bg-[#091524] p-3 shadow-2xl backdrop-blur-2xl"
-                  >
-                    <input
-                      type="text"
-                      placeholder="Search destination (e.g. Tokyo, Dubai, London, Zurich)..."
-                      value={destSearch}
-                      onChange={(e) => setDestSearch(e.target.value)}
-                      className="mb-2 w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-[12px] text-white outline-none focus:border-white/50"
-                      autoFocus
-                    />
-                    <div
-                      onWheel={(e) => e.stopPropagation()}
-                      className="max-h-60 overflow-y-auto space-y-1 pr-1 overscroll-contain"
-                    >
-                      {filteredDestAirports.map((airport) => (
-                        <button
-                          type="button"
-                          key={airport.code}
-                          onClick={() => {
-                            setDestination(airport);
-                            setShowDestPicker(false);
-                            setDestSearch("");
-                          }}
-                          className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left transition-colors ${
-                            destination?.code === airport.code ? "bg-white/20 text-white font-semibold" : "hover:bg-white/10 text-slate-200"
-                          }`}
-                        >
-                          <div>
-                            <div className="text-[12.5px] font-semibold text-white">
-                              {airport.city} ({airport.code})
-                            </div>
-                            <div className="text-[10px] text-white/60">{airport.name} · {airport.country}</div>
-                          </div>
-                          {destination?.code === airport.code && <Check size={14} className="text-white" />}
-                        </button>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
 
-            {/* DATES PICKER WITH 21ST.DEV GLASS CALENDAR */}
+            {/* DATES PICKER */}
             <div className="relative z-40">
               <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70">
                 Departure Date
               </label>
               <div
                 onClick={() => {
-                  setShowDatePicker(!showDatePicker);
+                  setShowDatePicker(true);
                   setShowOriginPicker(false);
                   setShowDestPicker(false);
                   setShowPassengerPicker(false);
@@ -880,20 +1009,6 @@ export default function FlightSearch() {
                 </div>
                 <ChevronDown size={14} className="text-white/60 transition-transform group-hover:translate-y-0.5" />
               </div>
-
-              {/* GLASS CALENDAR POPUP */}
-              <AnimatePresence>
-                {showDatePicker && (
-                  <GlassCalendar
-                    selectedDate={departDate}
-                    onSelect={(d) => {
-                      setDepartDate(d);
-                      setShowDatePicker(false);
-                    }}
-                    onClose={() => setShowDatePicker(false)}
-                  />
-                )}
-              </AnimatePresence>
             </div>
 
             {/* PASSENGERS PICKER */}
@@ -903,7 +1018,7 @@ export default function FlightSearch() {
               </label>
               <div
                 onClick={() => {
-                  setShowPassengerPicker(!showPassengerPicker);
+                  setShowPassengerPicker(true);
                   setShowOriginPicker(false);
                   setShowDestPicker(false);
                   setShowDatePicker(false);
@@ -921,84 +1036,10 @@ export default function FlightSearch() {
                 </div>
                 <ChevronDown size={14} className="text-white/60 transition-transform group-hover:translate-y-0.5" />
               </div>
-
-              {/* PASSENGER MODAL POPUP */}
-              <AnimatePresence>
-                {showPassengerPicker && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.98 }}
-                    onWheel={(e) => e.stopPropagation()}
-                    className="absolute right-0 top-[105%] z-[100] w-64 rounded-2xl border border-white/20 bg-[#091524] p-4 shadow-2xl backdrop-blur-2xl"
-                  >
-                    <div className="space-y-3">
-                      {/* ADULTS */}
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="text-[12.5px] font-semibold text-white">Adults</div>
-                          <div className="text-[10px] text-white/60">Age 12+</div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setPassengers((p) => ({ ...p, adults: Math.max(1, p.adults - 1) }))}
-                            className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white hover:border-white"
-                          >
-                            -
-                          </button>
-                          <span className="w-5 text-center text-[13px] font-semibold text-white">{passengers.adults}</span>
-                          <button
-                            type="button"
-                            onClick={() => setPassengers((p) => ({ ...p, adults: p.adults + 1 }))}
-                            className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white hover:border-white"
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* CHILDREN */}
-                      <div className="flex items-center justify-between border-t border-white/10 pt-3">
-                        <div>
-                          <div className="text-[12.5px] font-semibold text-white">Children</div>
-                          <div className="text-[10px] text-white/60">Age 2-11</div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setPassengers((p) => ({ ...p, children: Math.max(0, p.children - 1) }))}
-                            className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white hover:border-white"
-                          >
-                            -
-                          </button>
-                          <span className="w-5 text-center text-[13px] font-semibold text-white">{passengers.children}</span>
-                          <button
-                            type="button"
-                            onClick={() => setPassengers((p) => ({ ...p, children: p.children + 1 }))}
-                            className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white hover:border-white"
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* DONE BUTTON */}
-                      <button
-                        type="button"
-                        onClick={() => setShowPassengerPicker(false)}
-                        className="mt-2 w-full rounded-xl bg-white py-2 text-[12px] font-bold text-[#091524] shadow-md hover:bg-slate-100"
-                      >
-                        Apply
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
 
             {/* SEARCH BUTTON */}
-            <div className="pt-5 sm:col-span-2 lg:col-span-1">
+            <div className="pt-2 sm:pt-5 sm:col-span-2 lg:col-span-1">
               <motion.button
                 type="submit"
                 whileHover={{ scale: 1.03 }}
@@ -1007,19 +1048,67 @@ export default function FlightSearch() {
                 className="flex w-full items-center justify-center gap-2.5 rounded-2xl border border-white/30 bg-white px-6 py-4 text-[13.5px] font-bold text-[#091524] shadow-[0_10px_30px_rgba(255,255,255,0.25)] transition-all hover:bg-slate-100 disabled:opacity-70"
               >
                 {isSearching ? (
-                  <>
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#091524] border-t-transparent" />
-                    <span>Searching...</span>
-                  </>
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#091524] border-t-transparent" />
                 ) : (
                   <>
-                    <Search size={16} strokeWidth={2.4} />
-                    <span>Search</span>
+                    <Search size={18} />
+                    <span>Search Flights</span>
                   </>
                 )}
               </motion.button>
             </div>
           </form>
+
+          {/* PORTALED FULLSCREEN LUXURY MODALS */}
+          <AirportPickerModal
+            isOpen={showOriginPicker}
+            onClose={() => setShowOriginPicker(false)}
+            title="Select Departure Airport"
+            icon={Plane}
+            searchQuery={originSearch}
+            setSearchQuery={setOriginSearch}
+            airports={filteredOriginAirports}
+            selectedAirport={origin}
+            onSelect={(airport) => {
+              setOrigin(airport);
+              setShowOriginPicker(false);
+              setOriginSearch("");
+            }}
+          />
+
+          <AirportPickerModal
+            isOpen={showDestPicker}
+            onClose={() => setShowDestPicker(false)}
+            title="Select Arrival Destination"
+            icon={MapPin}
+            searchQuery={destSearch}
+            setSearchQuery={setDestSearch}
+            airports={filteredDestAirports}
+            selectedAirport={destination}
+            onSelect={(airport) => {
+              setDestination(airport);
+              setShowDestPicker(false);
+              setDestSearch("");
+            }}
+          />
+
+          <GlassCalendar
+            isOpen={showDatePicker}
+            selectedDate={departDate}
+            onSelect={(d) => {
+              setDepartDate(d);
+              setShowDatePicker(false);
+            }}
+            onClose={() => setShowDatePicker(false)}
+          />
+
+          <PassengerPickerModal
+            isOpen={showPassengerPicker}
+            onClose={() => setShowPassengerPicker(false)}
+            passengers={passengers}
+            setPassengers={setPassengers}
+            cabinClass={cabinClass}
+          />
 
           {/* PERKS ROW */}
           <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-5 text-[11.5px] text-slate-200/80">
@@ -1042,32 +1131,35 @@ export default function FlightSearch() {
         <div id="search-results-section" className="mt-14">
           {hasSearched && searchResults.length > 0 ? (
             <>
-              <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+              <div className="mb-6 flex flex-col gap-3 border-b border-white/10 pb-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <div className="flex items-center gap-2 text-[10.5px] font-semibold uppercase tracking-[0.25em] text-white/70">
-                    <Sparkles size={12} />
+                  <div className="flex items-center gap-1.5 text-[10px] sm:text-[10.5px] font-semibold uppercase tracking-[0.25em] text-white/70">
+                    <Sparkles size={12} className="text-sky-400" />
                     Live Curated Routes
                   </div>
-                  <h3 className="text-[24px] font-bold text-white sm:text-[28px]">
+                  <h3 className="text-[17px] sm:text-[24px] md:text-[28px] font-bold text-white tracking-tight">
                     Available Flights: {origin?.city || "New Delhi"} ({origin?.code || "DEL"}) → {destination?.city || "Tokyo"} ({destination?.code || "HND"})
                   </h3>
                 </div>
 
-                {/* CLASS FILTER TABS */}
-                <div className="flex items-center gap-1 rounded-full border border-white/15 bg-white/5 p-1">
-                  {["All", "First Suite", "Business Club", "Premium Economy", "Economy"].map((cls) => (
-                    <button
-                      key={cls}
-                      onClick={() => setActiveClassFilter(cls)}
-                      className={`rounded-full px-3 py-1 text-[11px] font-semibold transition-all ${
-                        activeClassFilter === cls
-                          ? "bg-white text-[#091524] shadow-sm"
-                          : "text-white/70 hover:text-white"
-                      }`}
-                    >
-                      {cls}
-                    </button>
-                  ))}
+                {/* CLASS FILTER TABS (CLEAN HORIZONTAL PILL CONTAINER) */}
+                <div className="w-full sm:w-auto overflow-x-auto no-scrollbar py-0.5">
+                  <div className="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 p-1">
+                    {["All", "First Suite", "Business Club", "Premium Economy", "Economy"].map((cls) => (
+                      <button
+                        key={cls}
+                        type="button"
+                        onClick={() => setActiveClassFilter(cls)}
+                        className={`whitespace-nowrap rounded-full px-3 py-1.5 text-[10.5px] sm:text-[11.5px] font-semibold transition-all ${
+                          activeClassFilter === cls
+                            ? "bg-white text-[#091524] shadow-md"
+                            : "text-white/70 hover:bg-white/10 hover:text-white"
+                        }`}
+                      >
+                        {cls}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
